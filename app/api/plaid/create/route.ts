@@ -1,4 +1,4 @@
-import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
+import { Configuration, PlaidApi, PlaidEnvironments, Products } from "plaid";
 
 const plaid = new PlaidApi(
   new Configuration({
@@ -16,7 +16,7 @@ export async function GET() {
   const { data } = await plaid.linkTokenCreate({
     user: { client_user_id: "user-1-test" },
     client_name: "TaxDrop",
-    products: ["transactions"],
+    products: [Products.Transactions],
     country_codes: ["US"],
     language: "en",
   });
