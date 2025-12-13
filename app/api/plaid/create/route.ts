@@ -1,4 +1,10 @@
-import { Configuration, PlaidApi, PlaidEnvironments, Products } from "plaid";
+import {
+  Configuration,
+  PlaidApi,
+  PlaidEnvironments,
+  Products,
+  CountryCode,
+} from "plaid";
 
 const plaid = new PlaidApi(
   new Configuration({
@@ -17,7 +23,7 @@ export async function GET() {
     user: { client_user_id: "user-1-test" },
     client_name: "TaxDrop",
     products: [Products.Transactions],
-    country_codes: ["US"],
+    country_codes: [CountryCode.Us],
     language: "en",
   });
 
