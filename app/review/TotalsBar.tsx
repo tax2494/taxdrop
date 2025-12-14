@@ -11,7 +11,7 @@ const LINE_NAMES: Record<string, string> = {
   "27": "Other",
 };
 
-export default function TotalsBar() {
+export function TotalsBar() {   // ← named export
   const { totals } = useTotals();
   return (
     <div className="bg-gray-50 p-4 rounded mb-4">
