@@ -1,4 +1,5 @@
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
+const supabase = getSupabaseAdmin();
 import { NextResponse } from "next/server";
 
 export async function GET() {

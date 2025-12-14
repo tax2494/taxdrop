@@ -1,5 +1,6 @@
 import { plaidClient } from "@/lib/plaid";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabase";
+const supabase = getSupabaseAdmin();
 
 export async function POST(req: Request) {
   const { public_token, accounts } = await req.json();
