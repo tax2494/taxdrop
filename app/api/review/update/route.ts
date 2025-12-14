@@ -3,21 +3,28 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { txId, line } = await req.json();
-  // Week-1 hard-coded user
   const userId = "11111111-1111-1111-1111-111111111111";
 
-  // 1. mark reviewed + set final category
+  // 1. verify ownership (get account ids for this user)
+  const { data: accts } = await supabaseAdmin
+    .from("accounts")
+    .select("id")
+    .eq("user_id", userId);
+  if (!accts || accts.length === 0)
+    return NextResponse.json({ error: "No accounts" }, { status: 404 });
+
+  const accountIds = accts.map((a) => a.id);
+
+  // 2. update only if tx belongs to one of those accounts
   const { error: txErr } = await supabaseAdmin
     .from("transactions")
     .update({ category_final: line, reviewed: true })
     .eq("id", txId)
-    .eq("account_id", function (q) {
-      return q.select("id").from("accounts").eq("user_id", userId);
-    }); // cheap ownership guard
+    .in("account_id", accountIds);
 
   if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
 
-  // 2. recompute tax_lines for 2024
+  // 3. recompute tax_lines for 2024
   await supabaseAdmin.rpc("recompute_tax_lines", { p_user_id: userId, p_year: 2024 });
 
   return NextResponse.json({ ok: true });
