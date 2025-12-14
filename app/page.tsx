@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import TotalsProvider from "./TotalsContext";
-import TotalsBar from "./TotalsBar";
+import { TotalsProvider } from "./TotalsContext";
+import { TotalsBar } from "./TotalsBar";
 
 type Tx = { id: string; merchant: string; amount: number; category_final: string | null };
 const SCHEDULE_C_LINES = [
