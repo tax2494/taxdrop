@@ -1,82 +1,8 @@
-"use client";
-import { useEffect, useState } from "react";
-import { TotalsProvider } from "./TotalsContext";
-import { TotalsBar } from "./TotalsBar";
-
-type Tx = { id: string; merchant: string; amount: number; category_final: string | null };
-const SCHEDULE_C_LINES = [
-  { value: "1", label: "1 – Gross receipts or sales" },
-  { value: "4", label: "4 – Commissions and fees" },
-  { value: "8", label: "8 – Advertising" },
-  { value: "9", label: "9 – Car and truck expenses" },
-  { value: "18", label: "18 – Office expense" },
-  { value: "21", label: "21 – Repairs and maintenance" },
-  { value: "27", label: "27 – Other expenses" },
-];
-
-export default function ReviewPage() {
-  const [txs, setTxs] = useState<Tx[]>([]);
-  const [totals, setTotals] = useState<Record<string, number>>({});
-
-  // initial data
-  useEffect(() => {
-    fetch("/api/review/list")
-      .then((r) => r.json())
-      .then(setTxs);
-
-    fetch("/api/review/totals")
-      .then((r) => r.json())
-      .then(setTotals);
-  }, []);
-
-  async function saveLine(txId: string, line: string) {
-    await fetch("/api/review/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ txId, line }),
-    });
-    // optimistic: update both table and totals
-    setTxs((t) => t.map((x) => (x.id === txId ? { ...x, category_final: line } : x)));
-    setTotals((prev) => ({ ...prev, [line]: (prev[line] || 0) + (txs.find((x) => x.id === txId)?.amount || 0) }));
-  }
-
+export default function Home() {
   return (
-    <TotalsProvider initial={totals}>
-      <main className="p-8 max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold mb-4">Review Transactions</h1>
-        <TotalsBar />
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b">
-              <th>Merchant</th>
-              <th>Amount</th>
-              <th>Schedule-C Line</th>
-            </tr>
-          </thead>
-          <tbody>
-            {txs.map((t) => (
-              <tr key={t.id} className="border-b">
-                <td>{t.merchant}</td>
-                <td>${t.amount.toFixed(2)}</td>
-                <td>
-                  <select
-                    className="border rounded px-2 py-1"
-                    value={t.category_final || ""}
-                    onChange={(e) => saveLine(t.id, e.target.value)}
-                  >
-                    <option value="">— pick —</option>
-                    {SCHEDULE_C_LINES.map((l) => (
-                      <option key={l.value} value={l.value}>
-                        {l.label}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </main>
-    </TotalsProvider>
+    <main className="p-8">
+      <h1 className="text-2xl font-bold">TaxDrop</h1>
+      <p>Week 2 review UI incoming...</p>
+    </main>
   );
 }
