@@ -1,9 +1,13 @@
-import { getSupabaseAdmin } from "@/lib/supabase";
-const supabase = getSupabaseAdmin();
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
+// fail-fast if env missing
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE!
+);
+
 export async function GET() {
-  // Week-1 hard-coded user
   const userId = "11111111-1111-1111-1111-111111111111";
 
   const { data, error } = await supabaseAdmin

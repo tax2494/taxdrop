@@ -1,12 +1,16 @@
-import { getSupabaseAdmin } from "@/lib/supabase";
-const supabase = getSupabaseAdmin();
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE!
+);
 
 export async function POST(req: Request) {
   const { txId, line } = await req.json();
   const userId = "11111111-1111-1111-1111-111111111111";
 
-  // 1. verify ownership (get account ids for this user)
+  // 1. verify ownership
   const { data: accts } = await supabaseAdmin
     .from("accounts")
     .select("id")
